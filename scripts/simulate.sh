@@ -1,13 +1,17 @@
 #!/bin/bash
 
-# Correcting the definition of ROOT_PATH to accurately reflect the description
-# Finds the current script's directory, moves one level up to its parent, then goes one more level up
+# Your previous setup here
 ROOT_PATH="$(dirname "$(dirname "$(realpath "$0")")")/"
-FILE_PATH="${ROOT_PATH}project.tjp"  # Fixed the variable reference
+FILE_PATH="${ROOT_PATH}project.tjp"
+OUTPUT_DIRECTORY="${ROOT_PATH}reports"
+LOG_DIRECTORY="${ROOT_PATH}logs/log.log"
 
-OUTPUT_DIRECTORY="${ROOT_PATH}reports"  # Closed the quotation mark
+# Execute tj3 and redirect both stdout and stderr to the log file
+tj3 "${FILE_PATH}" --output-dir "${OUTPUT_DIRECTORY}" &>> "${LOG_DIRECTORY}"
 
-LOG_DIRECTORY="${ROOT_PATH}logs/log.log"  # Assuming 'logs' is the correct folder name
-
-# Run tj3 with FILE_PATH and specify the OUTPUT_DIRECTORY, appending output to LOG_DIRECTORY
-tj3 "${FILE_PATH}" --output-dir "${OUTPUT_DIRECTORY}" >> "${LOG_DIRECTORY}"
+# Check if the command was successful
+if [ $? -eq 0 ]; then
+    echo "Command executed successfully." >> "${LOG_DIRECTORY}"
+else
+    echo "Command failed with exit code $?" >> "${LOG_DIRECTORY}"
+fi
